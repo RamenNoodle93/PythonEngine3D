@@ -1,58 +1,65 @@
-from Tools.constants import *
+import math
 import numpy as np
+
+from settings import *
+
+def rotationMatrixX(rotX): #Macierz rzutujaca osi X --------------------------------------------------------
+    
+    matrix = np.array([
+    [1, 0, 0, 0],
+    [0, math.cos(rotX), math.sin(rotX), 0],
+    [0, -math.sin(rotX), math.cos(rotX), 0],
+    [0, 0, 0, 1]
+    ], dtype = float)
+    
+    return matrix
+
+def rotationMatrixY(rotY): #Macierz rzutujaca osi Y --------------------------------------------------------
+    
+    matrix = np.array([
+    [ math.cos(rotY), 0,math.sin(rotY), 0],
+    [ 0, 1, 0, 0],
+    [ -math.sin(rotY), 0, math.cos(rotY), 0],
+    [ 0, 0, 0, 1 ],
+    ], dtype = float)
+    
+    return matrix
+    
+def rotationMatrixZ(rotZ): #Macierz rzutujaca osi Z --------------------------------------------------------
+    
+    matrix = np.array([
+    [ math.cos(rotZ), math.sin(rotZ), 0, 0],
+    [- math.sin(rotZ), math.cos(rotZ), 0, 0],
+    [ 0, 0, 1, 0],
+    [ 0, 0, 0, 1 ]
+    ], dtype = float)
+    
+    return matrix
+
+def translationMatrix(camera, objectPos): #Macierz przesuwania ----------------------------------------------------
+    
+    matrix = np.array([
+    [1, 0, 0, -camera.position[0] + objectPos[0]],
+    [0, 1, 0, -camera.position[1] + objectPos[1]],
+    [0, 0, 1, -camera.position[2] + objectPos[2]],
+    [0, 0, 0, 1]
+    ], dtype = float)
+    
+    return matrix
+
+def rotationMatrixAll(obj):
+    return np.dot(rotationMatrixX(obj.rotation[0]), np.dot(rotationMatrixY(obj.rotation[1]), rotationMatrixZ(obj.rotation[2])))
+
+def fullProjectionMatrix(camera):
+    return np.dot(rotationMatrixAll(camera), translationMatrix(camera))
+
+def centerPoint(x, y): #Koordynaty punktu wzgledem srodka ekranu, czyli punkt (0, 0) to srodek -------------
+    return (x + width / 2, height / 2 - y)
+
+def getCentered(point): #Zwraca koordynaty wysrodkowanego punktu -------------------------------------------
+    return (centerPoint(point[0], point[1]))
 
 def bothPointsHidden(visible, edge):
         if not visible[edge[0]] and not visible[edge[1]]:
             return True
         return False
-
-def clip_line(x1, y1, x2, y2, xmin = 0, ymin = 0, xmax = width, ymax = height):
-    # Compute the region codes for the two endpoints of the line
-    code1 = compute_region_code(x1, y1, xmin, ymin, xmax, ymax)
-    code2 = compute_region_code(x2, y2, xmin, ymin, xmax, ymax)
-
-    # Check if the line is completely inside the viewing region
-    if code1 == 0 and code2 == 0:
-        return [[x1, y1], [x2, y2]]
-
-    # Check if the line is completely outside the viewing region
-    if (code1 & code2) != 0:
-        return None
-
-    # Clip the line against each edge of the viewing region
-    for edge, code in zip(['left', 'right', 'bottom', 'top'], [1, 2, 4, 8]):
-        if code1 & code:
-            x1, y1 = clip_point(x1, y1, x2, y2, edge, xmin, ymin, xmax, ymax)
-            code1 = compute_region_code(x1, y1, xmin, ymin, xmax, ymax)
-        elif code2 & code:
-            x2, y2 = clip_point(x1, y1, x2, y2, edge, xmin, ymin, xmax, ymax)
-            code2 = compute_region_code(x2, y2, xmin, ymin, xmax, ymax)
-
-    return [[x1, y1], [x2, y2]]
-
-def compute_region_code(x, y, xmin, ymin, xmax, ymax):
-    code = 0
-    if x < xmin:
-        code |= 1
-    elif x > xmax:
-        code |= 2
-    if y < ymin:
-        code |= 4
-    elif y > ymax:
-        code |= 8
-    return code
-
-def clip_point(x1, y1, x2, y2, edge, xmin, ymin, xmax, ymax):
-    if edge == 'left':
-        x = xmin
-        y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1)
-    elif edge == 'right':
-        x = xmax
-        y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1)
-    elif edge == 'bottom':
-        x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1)
-        y = ymin
-    elif edge == 'top':
-        x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
-        y = ymax
-    return x, y
