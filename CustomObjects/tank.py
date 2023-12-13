@@ -5,9 +5,9 @@ from Tools.Objects.object import Object
 
 class Tank(Object):
     
-    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 800, color = (0, 200, 0), size = 1):
+    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (0, 200, 0)):
         
-        super().__init__(position, rotation, scale, color, size)
+        super().__init__(position, rotation, scale, color)
         
         self.AddNodes(np.array([
         [0.3, 0.0, 0.5],
@@ -98,7 +98,5 @@ class Tank(Object):
         [26, 31],
         [27, 30]
         ]))
-
-        # self.AddEdges(np.array([
         
-        # ]))
+        self.CreateHitbox()

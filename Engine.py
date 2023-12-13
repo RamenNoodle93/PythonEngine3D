@@ -1,9 +1,9 @@
 import pygame as pg
-import numpy as np
-import math
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
 
 from Tools.Objects.camera import *
-from Tools.utils import *
 from settings import *
 from game import *
 
@@ -11,10 +11,14 @@ class Engine:
     
     def __init__(self):
         pg.init()
-        self.screen = pg.display.set_mode((width, height))
+        self.screen = pg.display.set_mode((width, height), DOUBLEBUF | OPENGL)
+        
+        gluPerspective(hFov, (width / height), 0.1, 50.0)
+
         self.clock = pg.time.Clock()
-        self.camera = Camera()
         self.game = Game()
+        startData = self.game.GetStartVal()
+        self.camera = Camera(position = startData[0], rotation = startData[1])
         self.objects = []
         self.running = True
         self.Run()
@@ -25,12 +29,11 @@ class Engine:
             if not self.game.HandleEvents(self.camera):
                 self.running = False            
             
-            projectionMatrix = rotationMatrixAll(self.camera)
-
             pg.display.set_caption(f'{self.clock.get_fps()}')
 
-            self.game.Update(projectionMatrix, self.camera)
-            self.game.Render(self.screen)
+            self.game.Update(self.camera)
+            
+            self.game.Render(self.camera)
 
             pg.display.flip()
             self.clock.tick(60)
