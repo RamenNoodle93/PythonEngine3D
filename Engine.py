@@ -14,7 +14,6 @@ class Engine:
         self.screen = pg.display.set_mode((width, height), DOUBLEBUF | OPENGL)
         
         gluPerspective(hFov, (width / height), 0.1, 50.0)
-
         self.clock = pg.time.Clock()
         self.game = Game()
         startData = self.game.GetStartVal()

@@ -1,6 +1,5 @@
 import numpy as np
-import pygame as pg
-from pygame.locals import *
+import math
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
@@ -85,25 +84,96 @@ class Object:
         self.boundingBox.AddNodes(nodes)
         self.boundingBox.AddEdges(edges)
 
+    def ProjectCollision(self):
+        rotation = self.rotation
+        position = self.position
+        nodes = self.boundingBox.nodes        
+
+        rotation = [n * math.pi / 180 for n in rotation]
+
+        xTransform = np.array([
+        [1, 0, 0],
+        [0, math.cos(rotation[0]), math.sin(rotation[0])],
+        [0, -math.sin(rotation[0]) ,math.cos(rotation[0])]
+        ])
+            
+        yTransform = np.array([
+        [math.cos(rotation[1]), 0, -math.sin(rotation[1])],
+        [0, 1, 0],
+        [math.sin(rotation[1]), 0, math.cos(rotation[1])]
+        ])
+            
+        zTransform = np.array([
+        [math.cos(rotation[2]), -math.sin(rotation[2]), 0],
+        [math.sin(rotation[2]), math.cos(rotation[2]), 0],
+        [0, 0, 1]
+        ])
+
+        transformationMatrix = np.dot(xTransform, np.dot(yTransform, zTransform))
+        
+        transformed = []
+
+        for node in nodes:
+            node = np.dot(node, transformationMatrix)
+            
+            node[0] += position[0]
+            node[1] += position[1]
+            node[2] += position[2]
+                
+            transformed.append(node)
+            
+        arr = np.array(transformed)
+
+        maxInd = np.argmax(arr, axis = 0)
+        minInd = np.argmin(arr, axis = 0)
+        
+        xMax, yMax, zMax = arr[maxInd]
+        xMin, yMin, zMin = arr[minInd]
+        
+        glPointSize(5)
+        glBegin(GL_POINTS)
+        
+        glVertex3f(xMax[0], -8, xMax[2])
+        glVertex3f(xMin[0], -8, xMin[2])
+        glVertex3f(-8, yMax[1], yMax[2])
+        glVertex3f(-8, yMin[1], yMin[2])
+        
+        glEnd()
+
+        return [xMax, xMin, yMax, yMin]        
+
+    def CheckCollision(self, otherObj):
+        boundsSelf = self.ProjectCollision()
+        boundsOther = otherObj.ProjectCollision()
+        
+        if (boundsSelf[0][0] > boundsOther[1][0] and boundsSelf[1][0] < boundsOther[0][0]) and (boundsSelf[2][1] > boundsOther[3][1] and boundsSelf[3][1] < boundsOther[2][1]):
+            return True
+        else:
+            return False
+
     def Draw(self, showNodes, showEdges, showHitbox = False):
         
         glPushMatrix()
+        glTranslatef(self.position[0], self.position[1], self.position[2])
         
         glRotatef(self.rotation[0], 1, 0, 0)
         glRotatef(self.rotation[1], 0, 1, 0)
         glRotatef(self.rotation[2], 0, 0, 1)
+
+        glColor3f(255,0,0)
         
-        glTranslatef(self.position[0], self.position[1], self.position[2])
-
-        glColor3f(self.color[0], self.color[1], self.color[2])
-
+        glPointSize(4.0)
+        
         if showNodes:
             glBegin(GL_POINTS)
-            glPointSize(10)
+            
             for node in self.nodes:
+                
                 glVertex3f(node[0], node[1], node[2])
             glEnd()
             
+        glColor3f(self.color[0], self.color[1], self.color[2])
+
         if showEdges:
             glBegin(GL_LINES)
             for edge in self.edges:

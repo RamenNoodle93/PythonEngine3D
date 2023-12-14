@@ -1,5 +1,5 @@
 import math
 
-width = 1280
-height = 720
+width = 800
+height = 800
 hFov = 60
