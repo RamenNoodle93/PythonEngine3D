@@ -1,7 +1,8 @@
 import numpy as np
+import time
 
 from Tools.Objects.object import Object
-
+from CustomObjects.bullet import Bullet
 
 class Player(Object):
     
@@ -38,7 +39,13 @@ class Player(Object):
         [1, 2],
         [2, 0]
         ]))
+        
+        self.lastShot = 0
 
         self.flame.CreateHitbox()
-
         self.CreateHitbox()
+        
+    def Shoot(self, speed = 0.01):
+        if time.time() - 0.25 > self.lastShot:
+            self.lastShot = time.time()
+            return True

@@ -1,18 +1,14 @@
 import pygame as pg
 import math
 import numpy as np
-
+import copy
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from CustomObjects.asteroid import Asteroid
 
 from CustomObjects.player import Player
-
-from CustomObjects.surface import Surface
-from CustomObjects.tank import Tank
-from CustomObjects.axes import Axis
 from CustomObjects.asteroid import Asteroid
+from CustomObjects.bullet import Bullet
 
 class Game:
     
@@ -20,10 +16,17 @@ class Game:
         self.defaultColor = (255, 255, 255)
         self.objectList = []
         self.objectList.append(Player(color = self.defaultColor))
-        #self.objectList.append(Axis())
-        self.objectList.append(Asteroid(position = [0, 1, 0]))
-        self.player = self.objectList[0]
         
+        self.objectList.append([])
+        self.objectList.append([])
+        
+        for i in range(5):
+            self.AddObject(Asteroid(position = [0, i, 0]))
+            
+        self.AddObject(Bullet())
+
+        self.player = self.objectList[0]
+        self.count = 0
         self.speed = 0.0025
 
     def GetStartVal(self):
@@ -40,13 +43,20 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return False
+            if event.type == pg.KEYDOWN and event.key == pg.K_SPACE and len(self.objectList[2]) < 5:
+                if self.player.Shoot():
+                    self.AddObject(Bullet(copy.deepcopy(self.player.position), copy.deepcopy(self.player.rotation)))
         return True
 
     def AddObject(self, obj):
-        self.objectList.append(obj)
-
+        name = type(obj).__name__
+        print(name)
+        if name == 'Asteroid':
+            self.objectList[1].append(obj)
+        elif name =='Bullet':
+            self.objectList[2].append(obj)
+            
     def Update(self, camera):
-        
         pressed = pg.key.get_pressed()
     
         if pressed[pg.K_w]:
@@ -57,6 +67,13 @@ class Game:
                 self.player.velocity[0] += -math.sin(self.player.rotation[2] * math.pi / 180) * self.speed
         else:
             self.player.moving = False
+
+        if pressed[pg.K_t]:
+            self.player.position[2] += 0.1
+
+        if pressed[pg.K_g]:
+            self.player.position[2] -= 0.1
+
 
         if pressed[pg.K_q]:
             self.player.rotation[2] += 3
@@ -75,20 +92,39 @@ class Game:
         self.player.position[1] += self.player.velocity[1]
         self.player.position[0] += self.player.velocity[0]
 
-        if self.player.position[0] > self.boundary:
-            self.player.position[0] = -self.boundary
-        elif self.player.position[0] < -self.boundary:
-            self.player.position[0] = self.boundary
-        if self.player.position[1] > self.boundary:
-            self.player.position[1] = -self.boundary
-        elif self.player.position[1] < -self.boundary:
-            self.player.position[1] = self.boundary
+        self.Wrap(self.player)
 
-        for obj in self.objectList:
+        for obj in self.objectList[1]:
+            obj.Move()
             self.Wrap(obj)
                 
-        for i in range(1, len(self.objectList)):
-            self.player.CheckCollision(self.objectList[i])
+        for index1, obj in enumerate(self.objectList[2]):
+            if obj.Lifetime():
+                self.objectList[2].pop(index1)
+                break
+            obj.Move()
+            self.Wrap(obj)
+            for index2, asteroid in enumerate(self.objectList[1]):
+                if asteroid.CheckCollision(obj):
+                    self.objectList[2].pop(index1)
+                    position = copy.deepcopy(asteroid.position)
+                    count = asteroid.count
+                    
+                    self.objectList[1].pop(index2)
+                    
+                    if count != 0:
+                        for i in range(2):
+                            self.AddObject(Asteroid(copy.deepcopy(position), scale = 0.8, count = 0))
+                    break
+
+                    
+
+        for obj in self.objectList[1]:
+            if self.player.CheckCollision(obj):
+                print("Przegrales!")
+            else:
+                pass
+                #print("no collision")
         
     def Wrap(self, obj):
         if obj.position[0] > self.boundary:
@@ -100,7 +136,7 @@ class Game:
         elif obj.position[1] < -self.boundary:
             obj.position[1] = self.boundary
 
-    def Render(self, camera, showNodes = True, showEdges = True, showHitbox = True):
+    def Render(self, camera, showNodes = False, showEdges = True, showHitbox = False):
         glPushMatrix()
 
         glRotatef(camera.rotation[0], 1, 0, 0)
@@ -111,10 +147,18 @@ class Game:
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)        
 
-        for obj in self.objectList:
-            obj.Draw(showNodes, showEdges, showHitbox)
-            obj.ProjectCollision()
+        self.player.Draw(showNodes, showEdges, showHitbox)
+        if showHitbox:
+            self.player.ProjectCollision()
             
+        for obj in self.objectList[1]:
+            obj.Draw(showNodes, showEdges, showHitbox)
+            if showHitbox:
+                obj.ProjectCollision()
+            
+        for obj in self.objectList[2]:
+            obj.Draw(True, False, showHitbox)
+
         if self.player.moving:
             self.player.flame.Draw(showNodes, showEdges, showHitbox)
         
