@@ -15,7 +15,7 @@ class Engine:
         
         gluPerspective(hFov, (width / height), 0.1, 50.0)
         self.clock = pg.time.Clock()
-        self.game = Game()
+        self.game = Game(self.screen)
         startData = self.game.GetStartVal()
         self.camera = Camera(position = startData[0], rotation = startData[1])
         self.objects = []

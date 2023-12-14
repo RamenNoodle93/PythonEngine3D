@@ -6,8 +6,10 @@ from Tools.Objects.object import Object
 
 class Asteroid(Object):
     
-    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (255, 255, 255), count = 1):
+    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (255, 255, 255), count = 2):
         
+        color = [1 - 0.3 * (2 - count), 1 - 0.3 * (2 - count), 1 - 0.3 * (2 - count)]
+                
         super().__init__(position, rotation, scale, color)
         
         self.AddNodes(np.array([

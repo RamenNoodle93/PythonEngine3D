@@ -9,11 +9,15 @@ from OpenGL.GLU import *
 from CustomObjects.player import Player
 from CustomObjects.asteroid import Asteroid
 from CustomObjects.bullet import Bullet
+from Tools.utils import *
 
 class Game:
     
-    def __init__(self):
-        self.defaultColor = (255, 255, 255)
+    def __init__(self, display):
+        self.defaultColor = (1, 1, 1)
+
+        self.display = display
+
         self.objectList = []
         self.objectList.append(Player(color = self.defaultColor))
         
@@ -23,8 +27,6 @@ class Game:
         for i in range(5):
             self.AddObject(Asteroid(position = [0, i, 0]))
             
-        self.AddObject(Bullet())
-
         self.player = self.objectList[0]
         self.count = 0
         self.speed = 0.0025
@@ -107,14 +109,16 @@ class Game:
             for index2, asteroid in enumerate(self.objectList[1]):
                 if asteroid.CheckCollision(obj):
                     self.objectList[2].pop(index1)
+                    
                     position = copy.deepcopy(asteroid.position)
-                    count = asteroid.count
+                    countAst = copy.deepcopy(asteroid.count)
+                    scaleAst = copy.deepcopy(asteroid.scale)
                     
                     self.objectList[1].pop(index2)
                     
-                    if count != 0:
+                    if countAst != 0:
                         for i in range(2):
-                            self.AddObject(Asteroid(copy.deepcopy(position), scale = 0.8, count = 0))
+                            self.AddObject(Asteroid(copy.deepcopy(position), scale = scaleAst * 0.8, count = countAst - 1))
                     break
 
                     
@@ -160,7 +164,6 @@ class Game:
             obj.Draw(True, False, showHitbox)
 
         if self.player.moving:
-            self.player.flame.Draw(showNodes, showEdges, showHitbox)
-        
-        
+            self.player.flame.Draw(showNodes, showEdges, showHitbox)  
+
         glPopMatrix()
