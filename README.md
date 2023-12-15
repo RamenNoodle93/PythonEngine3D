@@ -1,4 +1,4 @@
-# Silnik graficzny z OpenGL
+# Asteroids
 ## Tworzenie niestandardowych obiektów
 Przykładowy kod tworzenia obiektu
 ```
