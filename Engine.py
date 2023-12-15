@@ -20,6 +20,7 @@ class Engine:
         self.camera = Camera(position = startData[0], rotation = startData[1])
         self.objects = []
         self.running = True
+
         self.Run()
 
     def Run(self):

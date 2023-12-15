@@ -15,7 +15,7 @@ class Object:
         self.scale = scale
         self.color = color
         self.pointSize = pointSize
-
+        self.collision = True
 
     def AddEdges(self, edgeList):
         

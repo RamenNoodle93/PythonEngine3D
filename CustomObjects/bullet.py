@@ -7,7 +7,7 @@ from Tools.utils import *
 
 class Bullet(Object):
     
-    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (255, 255, 255), speed = 0.1):
+    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (255, 255, 255), speed = 0.2):
         
         super().__init__(position, rotation, scale, color)
         
