@@ -22,6 +22,6 @@ class Nazwa(Object):
     self.CreateHitbox()
     #Ta metoda nie wymaga argumentów;
     #Automatycznie tworzy hitbox danego obiektu, domyślnie o kształcie prostopadłościanu;
-
+```
 ## Przetwarzanie powierzchni pygame na tekstury OpenGL
 Funkcja textureFromSurface tworzy teksturę OpenGL z powierzchni pygame. Następnie można ją wyrenderować. Wysokość i szerokość powierzchni muszą być potęgami dwójki, przezroczystość nie działa.
