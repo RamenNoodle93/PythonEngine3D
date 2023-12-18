@@ -15,10 +15,10 @@ class Surface(Object):
         nodes = []
         for y in range(10):
             for x in range(10):
-                nodes.append([-1 + 2 * y, 0, -1 + 2 * x])
-                nodes.append([1 + 2 * y, 0, -1 + 2 * x])
-                nodes.append([1 + 2 * y, 0, 1 + 2 * x])
-                nodes.append([-1 + 2 * y, 0, 1 + 2 * x])
+                nodes.append([-1 + 0.2 * y, 0, -1 + 0.2 * x])
+                nodes.append([1 + 0.2 * y, 0, -1 + 0.2 * x])
+                nodes.append([1 + 0.2 * y, 0, 1 + 0.2 * x])
+                nodes.append([-1 + 0.2 * y, 0, 1 + 0.2 * x])
             
                 self.AddEdges([0 + 4 * x + 40 * y, 1 + 4 * x + 40 * y])
                 self.AddEdges([1 + 4 * x + 40 * y, 2 + 4 * x + 40 * y])
@@ -30,26 +30,4 @@ class Surface(Object):
         self.AddNodes(nodes)
 
         self.CreateHitbox()
-
-        # nodestoadd = []
-        # for x in range(24):
-        #     nodestoadd.append([x - 12, 0, 12])
-        #     nodestoadd.append([x - 12, 0, -12])
-            
-        # for x in range(48):
-        #     if x%2 == 0:
-        #         self.AddEdges([x, x+1])
-        #         print(self.edges)
-                
-        # for z in range(24, 49):
-        #     nodestoadd.append([12, 0, z - 36])
-        #     nodestoadd.append([-12, 0, z - 36])
-                
-        # for z in range(48, 98):
-        #     if z % 2 == 0:
-        #         self.AddEdges([z, z+1])
-        
-        # for index, node in enumerate(nodestoadd):
-        #     print(index, node)
-        # self.AddNodes(nodestoadd)
         
