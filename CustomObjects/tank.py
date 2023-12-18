@@ -1,9 +1,8 @@
 import numpy as np
 
-from Tools.Objects.object import Object
+from CustomObjects.enemy import Enemy
 
-
-class Tank(Object):
+class Tank(Enemy):
     
     def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (0, 200, 0)):
         

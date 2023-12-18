@@ -24,10 +24,19 @@ class Surface(Object):
                 self.AddEdges([1 + 4 * x + 40 * y, 2 + 4 * x + 40 * y])
                 self.AddEdges([2 + 4 * x + 40 * y, 3 + 4 * x + 40 * y])
                 self.AddEdges([3 + 4 * x + 40 * y, 0 + 4 * x + 40 * y])
-                
-        
 
         self.AddNodes(nodes)
 
         self.CreateHitbox()
         
+     def Reposition(self, camera):
+        posX, posZ = self.position[0], self.position[2]
+        
+        scale = self.scale * 0.2
+        if round(camera.position[0]) % scale == 0:
+            posX = -round(camera.position[0]) - self.scale
+        if round(camera.position[2]) % scale == 0:
+            posZ = -round(camera.position[2]) - self.scale
+
+        self.position = [posX, 0, posZ]
+

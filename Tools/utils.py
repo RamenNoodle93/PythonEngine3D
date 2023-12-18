@@ -8,6 +8,9 @@ import random as rand
 def degToRad(angle):
     return angle * math.pi / 180    
 
+def radToDeg(angle):
+    return angle * 180 / math.pi    
+
 def textureFromSurface(pygameSurface):
 
     dimensions = pygameSurface.get_rect()
@@ -27,11 +30,32 @@ def textureFromSurface(pygameSurface):
     
         return texID
 
-def makeRandPos(restrictedPos, boundary, minDist = 2, axisZ = False):
-        randX = rand.choice([rand.uniform(-boundary, restrictedPos[0] - minDist), rand.uniform(boundary, restrictedPos[0] + minDist)])
-        randY = rand.choice([rand.uniform(-boundary, restrictedPos[1] - minDist), rand.uniform(boundary, restrictedPos[1] + minDist)])
+def makeRandPos(restrictedPos, boundary = 8, useBounds = True, maxDist = 10, minDist = 2, axisX = True, axisY = True, axisZ = False):
+    if useBounds:    
+        if axisX:
+            randX = rand.choice([rand.uniform(-boundary, restrictedPos[0] - minDist), rand.uniform(boundary, restrictedPos[0] + minDist)])
+        else:
+            axisX = 0
+        if axisY:
+            randY = rand.choice([rand.uniform(-boundary, restrictedPos[1] - minDist), rand.uniform(boundary, restrictedPos[1] + minDist)])
+        else:
+            randY = 0
         if axisZ:
             randZ = rand.choice([rand.uniform(-boundary, restrictedPos[2] - minDist), rand.uniform(boundary, restrictedPos[2] + minDist)])
+        else:
+            randZ = 0
+        return [randX, randY, randZ]
+    else:
+        if axisX:
+            randX = rand.choice([rand.uniform(-maxDist + restrictedPos[0], restrictedPos[0] - minDist), rand.uniform(maxDist + restrictedPos[0], restrictedPos[0] + minDist)])
+        else:
+            axisX = 0
+        if axisY:
+            randY = rand.choice([rand.uniform(-maxDist + restrictedPos[1], restrictedPos[1] - minDist), rand.uniform(maxDist + restrictedPos[1], restrictedPos[1] + minDist)])
+        else:
+            randY = 0
+        if axisZ:
+            randZ = rand.choice([rand.uniform(-maxDist + restrictedPos[2], restrictedPos[2] - minDist), rand.uniform(maxDist + restrictedPos[2], restrictedPos[2] + minDist)])
         else:
             randZ = 0
         return [randX, randY, randZ]

@@ -13,7 +13,7 @@ class Engine:
         pg.init()
         self.screen = pg.display.set_mode((width, height), DOUBLEBUF | OPENGL)
         
-        gluPerspective(hFov, (width / height), 0.1, 50.0)
+        gluPerspective(hFov, (width / height), 0.1, 75.0)
         self.clock = pg.time.Clock()
         self.game = Game(self.screen)
         startData = self.game.GetStartVal()
