@@ -31,9 +31,40 @@ class Player(Object):
                         
         self.speed = 0.05
 
+        self.moveColliders = []
+        
+        frontCollider = Object(position = self.position ,rotation = self.rotation, scale = self.scale, color = self.color)
+        frontCollider.AddNodes(np.array([
+        [-0.5, 0, 0.0],
+        [-0.5, 0, 0.5],
+        [-0.5, 0.5, 0.0],
+        [-0.5, 0.5, 0.5],
+        [0.5, 0, 0.0],
+        [0.5, 0, 0.5],
+        [0.5, 0.5, 0.0],
+        [0.5, 0.5, 0.5]
+        ]))
+        frontCollider.CreateHitbox()
+        self.moveColliders.append(frontCollider)
+
+        backCollider = Object(position = self.position ,rotation = self.rotation, scale = self.scale, color = self.color)
+        backCollider.AddNodes(np.array([
+        [-0.5, 0, -0.5],
+        [-0.5, 0, 0.0],
+        [-0.5, 0.5, -0.5],
+        [-0.5, 0.5, 0.0],
+        [0.5, 0, -0.5],
+        [0.5, 0, 0.0],
+        [0.5, 0.5, -0.5],
+        [0.5, 0.5, 0.0]
+        ]))
+        backCollider.CreateHitbox()
+        self.moveColliders.append(backCollider)
 
         self.lastShot = 0
         self.lastCollision = 0
+
+        self.canMove = [True, True] #back, front
 
         self.lives = 3
         self.alive = True
@@ -46,10 +77,10 @@ class Player(Object):
             return True
         
     def Move(self, pressed, camera):
-        if pressed[pg.K_w]:
+        if self.canMove[1] and pressed[pg.K_w]:
             camera.position[2] += math.cos(degToRad(camera.rotation[1])) * self.speed
             camera.position[0] += -math.sin(degToRad(camera.rotation[1])) * self.speed
-        if pressed[pg.K_s]:
+        if self.canMove[0] and pressed[pg.K_s]:
             camera.position[2] -= math.cos(degToRad(camera.rotation[1])) * self.speed
             camera.position[0] -= -math.sin(degToRad(camera.rotation[1])) * self.speed
         
