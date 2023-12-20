@@ -9,6 +9,7 @@ import itertools
 from CustomObjects.player import Player
 from CustomObjects.surface import Surface
 from CustomObjects.tank import Tank
+from CustomObjects.fasttank import FastTank
 from CustomObjects.background import Background
 from CustomObjects.bullet import Bullet
 from Tools.utils import makeRandPos
@@ -40,6 +41,8 @@ class Game:
         self.bullets = self.objectList[4]
         self.enemyBullets = self.objectList[5]
         self.barriers = self.objectList[6]
+
+        self.tanks.append(FastTank(position = [2, 0, 0]))
 
         # for i in range(50):
         #     newObject = Object()

@@ -4,9 +4,9 @@ from CustomObjects.enemy import Enemy
 
 class Tank(Enemy):
     
-    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (0, 200, 0)):
+    def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (0, 200, 0), cooldown = 3, speed = 1):
         
-        super().__init__(position, rotation, scale, color)
+        super().__init__(position, rotation, scale, color, cooldown, speed)
         
         self.AddNodes(np.array([
         [0.3, 0.0, 0.5],
