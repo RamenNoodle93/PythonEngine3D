@@ -15,14 +15,14 @@ class Player(Object):
         super().__init__(position, rotation, scale, color)
 
         self.AddNodes(np.array([
-        [-0.5, 0, -0.5],
-        [-0.5, 0, 0.5],
-        [-0.5, 0.5, -0.5],
-        [-0.5, 0.5, 0.5],
-        [0.5, 0, -0.5],
-        [0.5, 0, 0.5],
-        [0.5, 0.5, -0.5],
-        [0.5, 0.5, 0.5]
+        [-0.3, 0, -0.3],
+        [-0.3, 0, 0.3],
+        [-0.3, 0.5, -0.3],
+        [-0.3, 0.5, 0.3],
+        [0.3, 0, -0.3],
+        [0.3, 0, 0.3],
+        [0.3, 0.5, -0.3],
+        [0.3, 0.5, 0.3]
         ]))
         
         for n in range(0, 4): self.AddEdges([n, n + 4])
@@ -35,28 +35,28 @@ class Player(Object):
         
         frontCollider = Object(position = self.position ,rotation = self.rotation, scale = self.scale, color = self.color)
         frontCollider.AddNodes(np.array([
-        [-0.5, 0, 0.0],
-        [-0.5, 0, 0.5],
-        [-0.5, 0.5, 0.0],
-        [-0.5, 0.5, 0.5],
-        [0.5, 0, 0.0],
-        [0.5, 0, 0.5],
-        [0.5, 0.5, 0.0],
-        [0.5, 0.5, 0.5]
+        [-0.3, 0, 0.0],
+        [-0.3, 0, 0.3],
+        [-0.3, 0.5, 0.0],
+        [-0.3, 0.5, 0.3],
+        [0.3, 0, 0.0],
+        [0.3, 0, 0.3],
+        [0.3, 0.5, 0.0],
+        [0.3, 0.5, 0.3]
         ]))
         frontCollider.CreateHitbox()
         self.moveColliders.append(frontCollider)
 
         backCollider = Object(position = self.position ,rotation = self.rotation, scale = self.scale, color = self.color)
         backCollider.AddNodes(np.array([
-        [-0.5, 0, -0.5],
-        [-0.5, 0, 0.0],
-        [-0.5, 0.5, -0.5],
-        [-0.5, 0.5, 0.0],
-        [0.5, 0, -0.5],
-        [0.5, 0, 0.0],
-        [0.5, 0.5, -0.5],
-        [0.5, 0.5, 0.0]
+        [-0.3, 0, -0.3],
+        [-0.3, 0, 0.0],
+        [-0.3, 0.5, -0.3],
+        [-0.3, 0.5, 0.0],
+        [0.3, 0, -0.3],
+        [0.3, 0, 0.0],
+        [0.3, 0.5, -0.3],
+        [0.3, 0.5, 0.0]
         ]))
         backCollider.CreateHitbox()
         self.moveColliders.append(backCollider)

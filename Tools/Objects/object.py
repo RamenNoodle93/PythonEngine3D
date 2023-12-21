@@ -118,11 +118,9 @@ class Object:
     def CheckCollision(self, otherObj):
         boundsSelf = self.ProjectCollision()
         boundsOther = otherObj.ProjectCollision()
-        
         if (boundsSelf[0][0] >= boundsOther[1][0] and boundsSelf[1][0] <= boundsOther[0][0]) and (boundsSelf[2][1] >= boundsOther[3][1] and boundsSelf[3][1] <= boundsOther[2][1]) and (boundsSelf[4][2] >= boundsOther[5][2] and boundsSelf[5][2] <= boundsOther[4][2]):
             return True
-        else:
-            return False
+        return False
 
     def Draw(self, showNodes, showEdges, showHitbox = False):
         

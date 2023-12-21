@@ -12,7 +12,8 @@ from CustomObjects.tank import Tank
 from CustomObjects.fasttank import FastTank
 from CustomObjects.background import Background
 from CustomObjects.bullet import Bullet
-from Tools.utils import makeRandPos
+from CustomObjects.barrier import Barrier
+from Tools.utils import *
 
 class Game:
     
@@ -42,10 +43,10 @@ class Game:
         self.enemyBullets = self.objectList[5]
         self.barriers = self.objectList[6]
 
-        self.tanks.append(FastTank(position = [2, 0, 0]))
-
-        # for i in range(50):
-        #     newObject = Object()
+        for i in range(20):
+            newObj = Barrier(color = self.defColor)
+            newObj.position = makeRandPos(self.player.position, useBounds = False, maxDist = 50, axisY = False, axisZ = True)
+            self.AddObject(newObj)
 
     def GetStartVal(self):
         #Pozycja startowa kamery
@@ -67,7 +68,9 @@ class Game:
         name = type(obj).__name__
         if name == 'Tank':
             self.tanks.append(obj)
-        elif name =='Bullet':
+        elif name == 'Barrier':
+            self.barriers.append(obj)
+        elif name == 'Bullet':
             if enemy:
                 self.enemyBullets.append(obj)
             else:
@@ -85,21 +88,22 @@ class Game:
         self.renderStack.append(self.surface)
         self.renderStack.append(self.background)
         
-        for obj in itertools.chain(self.tanks, self.bullets, self.enemyBullets):
+        for obj in itertools.chain(self.tanks, self.bullets, self.enemyBullets, self.barriers):
             self.renderStack.append(obj)
-        for obj in itertools.chain(self.tanks):
-            self.colliders.append(obj)
             
+        for obj in itertools.chain(self.tanks, self.barriers):
+            self.colliders.append(obj)
+
+        self.player.canMove = [True, True]
+
         for obj in self.colliders:
             if obj.CheckCollision(self.player.moveColliders[0]):
+                print(self.player.canMove)
                 self.player.canMove[0] = False
-            else:
-                self.player.canMove[0] = True
-                
+
             if obj.CheckCollision(self.player.moveColliders[1]):
+                print(self.player.canMove)
                 self.player.canMove[1] = False
-            else:
-                self.player.canMove[1] = True
                 
         if len(self.tanks) < 1:
             newTank = Tank(color = self.defColor)
@@ -115,6 +119,10 @@ class Game:
                 self.enemyBullets.pop(index1)
                 break
             bullet.Move()
+            for obj in self.barriers:
+                if bullet.CheckCollision(obj):
+                    self.enemyBullets.pop(index1)
+                    break
             if bullet.CheckCollision(self.player):
                 print("dead!")
 
@@ -123,6 +131,10 @@ class Game:
                 self.bullets.pop(index1)
                 break
             bullet.Move()
+            for obj in self.barriers:
+                if bullet.CheckCollision(obj):
+                    self.bullets.pop(index1)
+                    break
             for index2, tank in enumerate(self.tanks):
                 if bullet.CheckCollision(tank):
                     self.bullets.pop(index1)

@@ -10,7 +10,7 @@ class Enemy(Object):
     def __init__(self, position = np.array([0, 0, 0], float), rotation = np.array([0, 0, 0], float), scale = 1, color = (0, 200, 0), cooldown = 3, speed = 1, shootMove = False, shootRot = False):
         
         super().__init__(position, rotation, scale, color)
-        self.lastReady = 0
+        self.lastReady = time.time() + 2
         self.cooldown = cooldown
         self.speed = speed
         self.shootRot = shootRot
@@ -23,8 +23,6 @@ class Enemy(Object):
 
         if angle < -math.pi or angle > math.pi:
             angle %= 2 * math.pi
-
-        print(angle)
 
         if not (angle < -math.pi + 0.1 or angle > math.pi - 0.1) or (angle > math.pi or angle < -math.pi):
             if angle > 2 * math.pi - 0.1 or (angle > 0 and angle < math.pi / 2 + math.pi / 18):
