@@ -22,7 +22,7 @@ class Barrier(Object):
         
         offset = copy.deepcopy(random.uniform(0.4, 1.2))
         for node in self.nodes[4:8]:
-            node[1] *= offset
+            node[1] *= offset + copy.deepcopy(random.uniform(-0.3, 0.3))
 
         self.AddEdges(np.array([
         [0, 1],

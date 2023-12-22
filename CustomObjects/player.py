@@ -25,6 +25,20 @@ class Player(Object):
         [0.3, 0.5, 0.3]
         ]))
         
+        self.aim = Object(position = self.position, rotation = self.rotation, scale = self.scale, color = self.color)
+        self.aim.AddNodes(np.array([
+        [-0.03, 0.15, -0.3],
+        [-0.05, 0.15, -0.3],
+        [-0.05, 0.25, -0.3],
+        [-0.03, 0.25, -0.3],
+        [0.03, 0.15, -0.3],
+        [0.05, 0.15, -0.3],
+        [0.05, 0.25, -0.3],
+        [0.03, 0.25, -0.3]
+        ]))
+
+        self.aim.AddEdges([[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 7]])
+        
         for n in range(0, 4): self.AddEdges([n, n + 4])
         for n in range(0, 8, 2): self.AddEdges([n, n + 1])
         for n in (0, 1, 4, 5): self.AddEdges([n, n + 2])
@@ -60,7 +74,17 @@ class Player(Object):
         ]))
         backCollider.CreateHitbox()
         self.moveColliders.append(backCollider)
-
+        
+        self.raycast = []
+        for i in range(15):
+            ray = Object(position = self.position ,rotation = self.rotation, scale = self.scale, color = self.color)
+            ray.AddNodes(np.array([
+            [0.0, 0.2, 0.0],
+            [0.0, 0.2, -0.8 * (i + 1)]
+            ]))
+            ray.CreateHitbox()
+            self.raycast.append(ray)
+            
         self.lastShot = 0
         self.lastCollision = 0
 
